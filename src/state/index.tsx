@@ -3,12 +3,15 @@ import { RecordingRules, RoomType } from '../types';
 import { TwilioError } from 'twilio-video';
 import { settingsReducer, initialSettings, Settings, SettingsAction } from './settings/settingsReducer';
 import useActiveSinkId from './useActiveSinkId/useActiveSinkId';
+import { User } from 'firebase';
 
 export interface StateContextType {
   error: TwilioError | Error | null;
   setError(error: TwilioError | Error | null): void;
   getToken(name: string, room: string, passcode?: string): Promise<{ room_type: RoomType; token: string }>;
-  user?: { displayName: string };
+  user?: User | null | { displayName: undefined; photoURL: undefined; passcode?: string };
+  signIn?(passcode?: string): Promise<void>;
+  signOut?(): Promise<void>;
   isAuthReady?: boolean;
   isFetching: boolean;
   activeSinkId: string;
