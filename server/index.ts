@@ -30,10 +30,17 @@ const findOrCreateRoom = async (roomName: string) => {
   } catch (error) {
     // the room was not found, so create it
     if (error.code === 20404) {
-      await twilioClient.video.rooms.create({
+      try {
+        await twilioClient.video.rooms.create({
         uniqueName: roomName,
         type: 'group',
       });
+      } catch(errorTwo) {
+        if(errorTwo != 53113){
+          throw errorTwo;
+        }
+      }
+
     } else {
       // let other errors bubble up
       throw error;
