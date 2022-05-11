@@ -65,7 +65,6 @@ export default function DeviceSelectionScreen({ name, roomName }: DeviceSelectio
 
   const handleJoin = () => {
     getToken(name, roomName).then(({ token }) => {
-      // wet and soft - this is the spot
       videoConnect(token);
       process.env.REACT_APP_DISABLE_TWILIO_CONVERSATIONS !== 'true' && chatConnect(token);
     });
