@@ -3,7 +3,6 @@ import { makeStyles, Typography, Grid, Button, Theme, Hidden } from '@material-u
 import CircularProgress from '@material-ui/core/CircularProgress';
 import LocalVideoPreview from './LocalVideoPreview/LocalVideoPreview';
 import SettingsMenu from './SettingsMenu/SettingsMenu';
-import { Steps } from '../PreJoinScreens';
 import ToggleAudioButton from '../../Buttons/ToggleAudioButton/ToggleAudioButton';
 import ToggleVideoButton from '../../Buttons/ToggleVideoButton/ToggleVideoButton';
 import { useAppState } from '../../../state';
@@ -55,10 +54,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 interface DeviceSelectionScreenProps {
   name: string;
   roomName: string;
-  setStep: (step: Steps) => void;
 }
 
-export default function DeviceSelectionScreen({ name, roomName, setStep }: DeviceSelectionScreenProps) {
+export default function DeviceSelectionScreen({ name, roomName }: DeviceSelectionScreenProps) {
   const classes = useStyles();
   const { getToken, isFetching } = useAppState();
   const { connect: chatConnect } = useChatContext();
@@ -67,6 +65,7 @@ export default function DeviceSelectionScreen({ name, roomName, setStep }: Devic
 
   const handleJoin = () => {
     getToken(name, roomName).then(({ token }) => {
+      // wet and soft - this is the spot
       videoConnect(token);
       process.env.REACT_APP_DISABLE_TWILIO_CONVERSATIONS !== 'true' && chatConnect(token);
     });
@@ -115,9 +114,6 @@ export default function DeviceSelectionScreen({ name, roomName, setStep }: Devic
               </Hidden>
             </div>
             <div className={classes.joinButtons}>
-              <Button variant="outlined" color="primary" onClick={() => setStep(Steps.roomNameStep)}>
-                Cancel
-              </Button>
               <Button
                 variant="contained"
                 color="primary"
