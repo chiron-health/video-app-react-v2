@@ -37,7 +37,7 @@ ReactDOM.render(
       <Router>
         <AppStateProvider>
           <Switch>
-            <PrivateRoute path="/room/:URLRoomName">
+            <PrivateRoute path="/appointments/:URLRoomName">
               <VideoApp />
             </PrivateRoute>
           </Switch>

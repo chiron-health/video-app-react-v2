@@ -23,6 +23,14 @@ export default function useHandleRoomDisconnection(
         if (isSharingScreen) {
           toggleScreenShare();
         }
+
+        const params = new URLSearchParams(window.location.search);
+        const complete_redirect_url = params.get('complete_redirect_url');
+
+        // TODO - handle this w/ a redirect or failed UI state later
+        if (typeof complete_redirect_url !== 'string') throw new Error('no token');
+
+        window.location.replace(complete_redirect_url);
       };
 
       room.on('disconnected', onDisconnected);
