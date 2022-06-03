@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
@@ -9,9 +9,10 @@ import useRoomState from '../../hooks/useRoomState/useRoomState';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { Typography, Grid, Hidden } from '@material-ui/core';
 import ToggleAudioButton from '../Buttons/ToggleAudioButton/ToggleAudioButton';
-import ToggleChatButton from '../Buttons/ToggleChatButton/ToggleChatButton';
 import ToggleVideoButton from '../Buttons/ToggleVideoButton/ToggleVideoButton';
 import ToggleScreenShareButton from '../Buttons/ToogleScreenShareButton/ToggleScreenShareButton';
+import InviteUserButton from '../Buttons/InviteUserButton/InviteUserButton';
+import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -62,12 +63,27 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+function useQuery() {
+  const { search } = useLocation();
+
+  return React.useMemo(() => new URLSearchParams(search), [search]);
+}
+
 export default function MenuBar() {
   const classes = useStyles();
   const { isSharingScreen, toggleScreenShare } = useVideoContext();
   const roomState = useRoomState();
   const isReconnecting = roomState === 'reconnecting';
-  const { room } = useVideoContext();
+  const query = useQuery();
+  const [roomName, setRoomName] = React.useState<string>('');
+
+  React.useEffect(() => {
+    const room_name = query.get('room_name');
+
+    if (room_name) {
+      setRoomName(room_name);
+    }
+  }, [query]);
 
   return (
     <>
@@ -81,15 +97,17 @@ export default function MenuBar() {
         <Grid container justifyContent="space-around" alignItems="center">
           <Hidden smDown>
             <Grid style={{ flex: 1 }}>
-              <Typography variant="body1">{room!.name}</Typography>
+              <Typography variant="body1">{roomName}</Typography>
             </Grid>
           </Hidden>
           <Grid item>
             <Grid container justifyContent="center">
               <ToggleAudioButton disabled={isReconnecting} />
               <ToggleVideoButton disabled={isReconnecting} />
+
               {!isSharingScreen && !isMobile && <ToggleScreenShareButton disabled={isReconnecting} />}
-              {process.env.REACT_APP_DISABLE_TWILIO_CONVERSATIONS !== 'true' && <ToggleChatButton />}
+              <InviteUserButton disabled={isReconnecting} />
+
               <Hidden smDown>
                 <Menu />
               </Hidden>

@@ -9,7 +9,6 @@ import NetworkQualityLevel from '../NetworkQualityLevel/NetworkQualityLevel';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
-import useIsRecording from '../../hooks/useIsRecording/useIsRecording';
 import useIsTrackSwitchedOff from '../../hooks/useIsTrackSwitchedOff/useIsTrackSwitchedOff';
 import useParticipantIsReconnecting from '../../hooks/useParticipantIsReconnecting/useParticipantIsReconnecting';
 import usePublications from '../../hooks/usePublications/usePublications';
@@ -137,8 +136,6 @@ export default function MainParticipantInfo({ participant, children }: MainParti
   const isVideoSwitchedOff = useIsTrackSwitchedOff(videoTrack as LocalVideoTrack | RemoteVideoTrack);
   const isParticipantReconnecting = useParticipantIsReconnecting(participant);
 
-  const isRecording = useIsRecording();
-
   return (
     <div
       data-cy-main-participant
@@ -151,27 +148,14 @@ export default function MainParticipantInfo({ participant, children }: MainParti
         <div style={{ display: 'flex' }}>
           <div className={classes.identity}>
             <AudioLevelIndicator audioTrack={audioTrack} />
-            <Typography variant="body1" color="inherit">
+            {/* <Typography variant="body1" color="inherit">
               {participant.identity}
               {isLocal && ' (You)'}
               {screenSharePublication && ' - Screen'}
-            </Typography>
+            </Typography> */}
           </div>
           <NetworkQualityLevel participant={participant} />
         </div>
-        {isRecording && (
-          <Tooltip
-            title="All participants' audio and video is currently being recorded. Visit the app settings to stop recording."
-            placement="top"
-          >
-            <div className={classes.recordingIndicator}>
-              <div className={classes.circle}></div>
-              <Typography variant="body1" color="inherit" data-cy-recording-indicator>
-                Recording
-              </Typography>
-            </div>
-          </Tooltip>
-        )}
       </div>
       {(!isVideoEnabled || isVideoSwitchedOff) && (
         <div className={classes.avatarContainer}>

@@ -2,25 +2,32 @@ import React, { useState, useEffect } from 'react';
 import DeviceSelectionScreen from './DeviceSelectionScreen/DeviceSelectionScreen';
 import IntroContainer from '../IntroContainer/IntroContainer';
 import MediaErrorSnackbar from './MediaErrorSnackbar/MediaErrorSnackbar';
-import { v4 } from 'uuid';
 import { useAppState } from '../../state';
-import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+
+function useQuery() {
+  const { search } = useLocation();
+
+  return React.useMemo(() => new URLSearchParams(search), [search]);
+}
 
 export default function PreJoinScreens() {
   const { user } = useAppState();
   const { getAudioAndVideoTracks } = useVideoContext();
-  const { URLRoomName } = useParams();
+  const query = useQuery();
 
   const [roomName, setRoomName] = useState<string>('');
 
   const [mediaError, setMediaError] = useState<Error>();
 
   useEffect(() => {
-    if (URLRoomName) {
-      setRoomName(URLRoomName);
+    const room_name = query.get('room_name');
+
+    if (room_name) {
+      setRoomName(room_name);
     }
-  }, [user, URLRoomName]);
+  }, [user, query]);
 
   useEffect(() => {
     if (!mediaError) {
@@ -35,7 +42,7 @@ export default function PreJoinScreens() {
   return (
     <IntroContainer>
       <MediaErrorSnackbar error={mediaError} />
-      <DeviceSelectionScreen name={v4()} roomName={roomName} />
+      <DeviceSelectionScreen name={query.get('patient_name') || ''} roomName={roomName} />
     </IntroContainer>
   );
 }
