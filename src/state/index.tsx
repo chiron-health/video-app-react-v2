@@ -54,19 +54,27 @@ export default function AppStateProvider(props: React.PropsWithChildren<{}>) {
   contextValue = {
     ...contextValue,
     getToken: async (user_identity, room_name) => {
-      const endpoint = process.env.REACT_APP_TOKEN_ENDPOINT || '/token';
+      // const endpoint = process.env.REACT_APP_TOKEN_ENDPOINT || '/token';
 
-      return fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_identity,
-          room_name,
-          create_conversation: process.env.REACT_APP_DISABLE_TWILIO_CONVERSATIONS !== 'true',
-        }),
-      }).then(res => res.json());
+      // return fetch(endpoint, {
+      //   method: 'POST',
+      //   headers: {
+      //     'content-type': 'application/json',
+      //   },
+      //   body: JSON.stringify({
+      //     user_identity,
+      //     room_name,
+      //     create_conversation: process.env.REACT_APP_DISABLE_TWILIO_CONVERSATIONS !== 'true',
+      //   }),
+      // }).then(res => res.json());
+
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('twilio_auth');
+
+      // TODO - handle this w/ a redirect or failed UI state later
+      if (typeof token !== 'string') throw new Error('no token');
+
+      return Promise.resolve({ token: token, room_type: 'group' });
     },
     updateRecordingRules: async (room_sid, rules) => {
       const endpoint = process.env.REACT_APP_TOKEN_ENDPOINT || '/recordingrules';
