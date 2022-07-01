@@ -37,7 +37,7 @@ interface AboutDialogProps {
 }
 
 function InviteUserDialog({ open, onClose }: PropsWithChildren<AboutDialogProps>) {
-  const url = `${window.location.pathname.toString()}/guest`;
+  const url = `${process.env.REACT_APP_MEET_NOW_BASE_URL}${window.location.pathname.toString()}/guest`;
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth={true} maxWidth="xs">
